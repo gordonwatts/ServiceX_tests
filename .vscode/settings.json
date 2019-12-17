@@ -1,0 +1,11 @@
+{
+    "python.pythonPath": "I:\\Anaconda3\\envs\\servicex_tests\\python.exe",
+    "python.linting.pylintEnabled": false,
+    "python.linting.flake8Enabled": true,
+    "python.linting.enabled": true,
+    "python.linting.flake8Args": [
+        "--ignore E501"
+    ],
+    "python.testing.autoTestDiscoverOnSaveEnabled": false,
+    "python.testing.pytestEnabled": true
+}
