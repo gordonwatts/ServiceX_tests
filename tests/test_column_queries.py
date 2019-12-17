@@ -1,10 +1,7 @@
 # A number of queries that test that the system works pretty well.
-from tests.config import running_backend
+from tests.config import running_backend  # noqa
+from tests.servicex_test_utils import wait_for_request_done, get_servicex_request_data
 import requests
-from time import sleep
-from minio import Minio
-import tempfile
-import pyarrow.parquet as pq
 
 # This can take a very long time - 15-30 minutes depending on the quality of your connection.
 # If it is taking too long, most likely the problem is is the downloading - so look at the log
@@ -25,33 +22,12 @@ def test_query_new_dataset_localds(running_backend):
     print(response.json())
     assert response.status_code == 200
     request_id = response.json()["request_id"]
-    status_endpoint = f'{running_backend}/transformation/{request_id}/status'
+    assert isinstance(request_id, str)
 
-    # Wait for the transform to complete.
-    done = False
-    while not done:
-        sleep(5)
-        status = requests.get(status_endpoint)
-        print(status)
-        assert status.status_code == 200
-        #print("We have processed {} files there are {} remainng".format(status['files-processed'], status['files-remaining']))
-        done = int(status.json()['files-remaining']) == 0
+    # Wait for the request to finish
+    wait_for_request_done(running_backend, request_id)
 
-    # Now get the data
-    minio_endpoint = "localhost:9000"
-    minio_client = Minio(minio_endpoint,
-                    access_key='miniouser',
-                    secret_key='leftfoot1',
-                    secure=False)
-    objects = minio_client.list_objects(request_id)
-    sample_file = list([file.object_name for file in objects])[0]
-    print(sample_file)
-
-    with tempfile.TemporaryDirectory() as tmpdirname:
-        f_name = f'{tmpdirname}/sample.root'
-        minio_client.fget_object(request_id,
-                                sample_file,
-                                f_name)
-        pa_table = pq.read_table(f_name)
+    # Load the data back.
+    pa_table = get_servicex_request_data(running_backend, request_id)
 
     assert len(pa_table) == 9800
