@@ -15,3 +15,5 @@ You'll need the following:
 
 ## Running the tests
 
+1. Make sure to `pip install -r requirements.txt`
+1. Just use the `pytest` command to run the tests. This will setup a ServiceX cluster in your current kubernetes cluster, and run tests against it. It will leave the cluster running when the tests are done.
