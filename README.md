@@ -17,3 +17,8 @@ You'll need the following:
 
 1. Make sure to `pip install -r requirements.txt`
 1. Just use the `pytest` command to run the tests. This will setup a ServiceX cluster in your current kubernetes cluster, and run tests against it. It will leave the cluster running when the tests are done.
+
+## Caveats
+
+1. The tests that use the default public file are slow - they take 6 minutes, and there is no caching. And that is at the end of a fast home connection.
+1. There is currently a bug in the x509 cert which means that you can't run the server standalone - so a file with credentials (even though never used) has to be provided. The test scripts default its location to one directory up from this package, called `servicex-desktop-local.yaml`. See the `ServiceX` repo for a description of what is needed in it.
