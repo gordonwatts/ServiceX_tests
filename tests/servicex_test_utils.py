@@ -15,7 +15,11 @@ def wait_for_request_done(backend_address: str, request_id: str) -> None:
         sleep(5)
         status = requests.get(status_endpoint)
         assert status.status_code == 200
-        done = int(status.json()['files-remaining']) == 0
+        info = status.json()
+        if ('files-remaining' in info) and (info['files-remaining'] is not None):
+            done = int(info['files-remaining']) == 0
+        else:
+            print (f'missing "files-remaining" in response: {info}.')
 
 def get_servicex_request_data(backend_address: str, request_id: str):
     'Get the data back in a table. Assumes request is done and there is only one result file.'
