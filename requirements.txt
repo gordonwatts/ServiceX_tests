@@ -5,3 +5,6 @@ confluent_kafka
 pyarrow
 minio
 flake8
+pandas
+uproot
+uproot_methods

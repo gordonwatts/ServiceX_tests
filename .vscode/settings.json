@@ -18,15 +18,19 @@
         "Powheg",
         "STDM",
         "Topo",
+        "fget",
         "itertools",
         "kubectl",
         "localds",
         "minio",
         "noqa",
         "pytest",
+        "rootio",
         "rucio",
         "servicex",
         "servicexxaodcpptransformer",
+        "sslhep",
+        "xaod",
         "xrootd"
     ]
 }
