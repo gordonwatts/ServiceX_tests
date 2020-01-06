@@ -17,7 +17,7 @@ def copy_file_to_container(container_name, file_uri, file_name):
 
 def is_chart_running(name: str):
     'Is a chart of name `name` running?'
-    result = subprocess.run(['helm', 'list', name, '-q'], stdout=subprocess.PIPE)
+    result = subprocess.run(['helm', 'list', '--filter', name, '-q'], stdout=subprocess.PIPE)
     if result.returncode != 0:
         return False
     if result.stdout.decode('utf-8').strip() != name:
@@ -32,7 +32,7 @@ def stop_helm_chart(name: str):
     logging.info(f'Deleteing running chart {name}.')
 
     # It is running, lets do the delete now.
-    subprocess.run(['helm', 'delete', '--purge', name])
+    subprocess.run(['helm', 'delete', name])
 
     # It often fails on windows - so we check the listing again.
     if is_chart_running(name):
@@ -72,7 +72,7 @@ def start_helm_chart(chart_name: str, restart_if_running: bool = False, config_f
     logging.info(f'Starting chart {chart_name}.')
 
     # Start the chart now that the system is clean.
-    cmd = ['helm', 'install', '--name', chart_name] + list(chain.from_iterable([['-f', f] for f in config_files])) + ['../ServiceX/servicex']
+    cmd = ['helm', 'install', chart_name] + list(chain.from_iterable([['-f', f] for f in config_files])) + ['../ServiceX/servicex']
     result = subprocess.run(cmd, stdout=subprocess.PIPE)
     if result.returncode != 0:
         stop_helm_chart(chart_name)
