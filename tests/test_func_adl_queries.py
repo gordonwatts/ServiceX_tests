@@ -37,7 +37,7 @@ def test_func_adl_query_simple_jets_large_sample(running_backend):
 
     # Start the request off and get back the basic info about the request.
     response = requests.post(f'{running_backend}/transformation', json={
-        "did": "mc15_13TeV:mc15_13TeV.361106.PowhegPythia8EvtGen_AZNLOCTEQ6L1_Zee.merge.DAOD_STDM3.e3601_s2576_s2132_r6630_r6264_p2363_tid05630052_00",
+        "did": "data17_13TeV:data17_13TeV.periodK.physics_Main.PhysCont.DAOD_STDM7.grp22_v01_p3713",
         "selection": "(call ResultTTree (call Select (call SelectMany (call EventDataset (list 'localds:bogus')) (lambda (list e) (call (attr e 'Jets') 'AntiKt4EMTopoJets'))) (lambda (list j) (/ (call (attr j 'pt')) 1000.0))) (list 'JetPt') 'analysis' 'junk.root')",
         "image": "servicexxaodcpptransformer:latest",
         "result-destination": "object-store",
