@@ -10,6 +10,7 @@ def wait_for_request_done(backend_address: str, request_id: str) -> None:
 
     # Wait for the transform to complete.
     done = False
+    info = None
     while not done:
         sleep(5)
         status = requests.get(status_endpoint)
@@ -19,6 +20,7 @@ def wait_for_request_done(backend_address: str, request_id: str) -> None:
             done = int(info['files-remaining']) == 0
         else:
             print (f'missing "files-remaining" in response: {info}.')
+    print(f'Finihsed processing. Final message: {info}')
 
 def get_servicex_request_data(backend_address: str, request_id: str):
     'Get the data back in a table. Assumes request is done and there is only one result file.'
@@ -32,6 +34,7 @@ def get_servicex_request_data(backend_address: str, request_id: str):
                     secure=False)
     objects = list(minio_client.list_objects(request_id))
     assert len(objects) >= 1
+    print(f'Found {len(objects)} objects to read back from minio')
 
     sample_files = list([file.object_name for file in objects])
     import uproot
