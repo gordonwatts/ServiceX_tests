@@ -2,10 +2,13 @@
 from tests.config import running_backend  # noqa
 from tests.servicex_test_utils import wait_for_request_done, get_servicex_request_data
 import requests
+import pytest
 
 # This can take a very long time - 15-30 minutes depending on the quality of your connection.
 # If it is taking too long, most likely the problem is is the downloading - so look at the log
 # from the rucio downloader to track progress (yes, an obvious feature request).
+
+@pytest.mark.skip()
 def test_column_query(running_backend):
     'Get electrons using column query'
 
