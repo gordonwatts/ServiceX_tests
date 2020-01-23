@@ -6,6 +6,9 @@ import logging
 import pytest
 from itertools import chain
 
+# The container that will we can use for the transformer
+default_container = "sslhep/servicex_xaod_cpp_transformer:v0.2"
+#default_container = "sslhep/servicex_code_gen_funcadl_xaod:support_subscripts"
 
 def copy_file_to_container(container_name, file_uri, file_name):
     logging.info(f'Making sure the file {file_name} is local in the xrootd container.')
