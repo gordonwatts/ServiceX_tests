@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "C:\\Users\\gordo\\Anaconda3\\envs\\ServiceX_tests\\python.exe",
+    "python.pythonPath": "i:\\gwatts\\Code\\irishep\\ServiceX_tests\\.venv\\Scripts\\python.exe",
     "python.linting.pylintEnabled": false,
     "python.linting.flake8Enabled": true,
     "python.linting.enabled": true,
