@@ -3,6 +3,7 @@ import requests
 from time import sleep
 from minio import Minio
 import tempfile
+import numpy as np
 
 def wait_for_request_done(backend_address: str, request_id: str) -> None:
     'Wait until a request has finished processing and files are ready to go'
@@ -22,8 +23,12 @@ def wait_for_request_done(backend_address: str, request_id: str) -> None:
             print (f'missing "files-remaining" in response: {info}.')
     print(f'Finihsed processing. Final message: {info}')
 
-def get_servicex_request_data(backend_address: str, request_id: str):
-    'Get the data back in a table. Assumes request is done and there is only one result file.'
+def get_servicex_request_data(backend_address: str, request_id: str, as_data_type = 'pandas'):
+    '''
+    Get the data back in a table. Assumes request is done and there is only one result file.
+
+    as_data_type can be either pandas or awkward, which determines the return type.
+    '''
     # Now get the data
     # TODO: This should not be hardwired right now!
     # Really, it should come back in the request status!
@@ -37,6 +42,7 @@ def get_servicex_request_data(backend_address: str, request_id: str):
     print(f'Found {len(objects)} objects to read back from minio')
 
     sample_files = list([file.object_name for file in objects])
+    assert len(sample_files) > 0
     import uproot
     import uproot_methods
     import pandas
@@ -49,9 +55,21 @@ def get_servicex_request_data(backend_address: str, request_id: str):
             try:
                 r = f_in[f_in.keys()[0]]
                 assert r is not None
-                return r.pandas.df()
+                if as_data_type == 'pandas':
+                    return r.pandas.df()
+                else:
+                    return r.arrays()
+                    
             finally:
                 f_in._context.source.close()
 
         all_data = (file_to_table(request_id, s_file, f'{tmpdirname}/sample_{i}.root') for i, s_file in enumerate(sample_files))
-        return pandas.concat(all_data)
+        if len(sample_files) == 1:
+            return list(all_data)[0]
+
+        if as_data_type == 'pandas':
+            return pandas.concat(all_data)
+        else:
+            frames = list(all_data)
+            col_names = frames[0].keys()
+            return {c: np.concatenate([ar[c] for ar in frames]) for c in col_names}
