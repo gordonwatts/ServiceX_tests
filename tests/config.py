@@ -128,7 +128,8 @@ def running_backend():
     (_, ip_address) = start_helm_chart(c_name, restart_if_running=False)
     with forward_port(find_pod(c_name, "servicex-app"), 5000):
         with forward_port(find_pod(c_name, "minio"), 9000):
-            yield f"http://{ip_address}:5000/servicex"
+            with forward_port(find_pod(c_name, 'rabbitmq'), 15672):
+                yield f"http://{ip_address}:5000/servicex"
 
 
 @pytest.yield_fixture(scope='session')
