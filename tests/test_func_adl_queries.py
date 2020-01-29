@@ -43,7 +43,7 @@ def test_func_adl_query_electrons_and_muons (running_backend):
         "result-destination": "object-store",
         "result-format": "root-file",
         "chunk-size": 1000,
-        "workers": 5
+        "workers": 20
     })
     assert response.status_code == 200
     request_id = response.json()["request_id"]
